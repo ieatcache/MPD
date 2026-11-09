@@ -1,0 +1,448 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Medicare Drug Plan Comparison</title><style>body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;margin:24px 16px;background:#f6f8f8}</style></head><body>
+<!-- ===== Medicare Drug Plan Comparison: paste everything below into a Squarespace Code Block ===== -->
+<div id="mpf">
+<style>
+#mpf{--a:#1f6f5c;--a2:#e8f3ef;--t:#1d2327;--m:#5f6b72;--l:#dde3e6;--warn:#8a5a00;--warnbg:#fff6e0;font-family:inherit;color:var(--t);max-width:980px;margin:0 auto;line-height:1.45}
+#mpf *{box-sizing:border-box}
+#mpf h2{font-size:26px;margin:0 0 4px}#mpf h3{font-size:17px;margin:0 0 10px}
+#mpf .sub{color:var(--m);font-size:14px;margin:0 0 18px}
+#mpf .card{border:1px solid var(--l);border-radius:10px;padding:18px;margin:0 0 14px;background:#fff}
+#mpf .row{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end}
+#mpf label{display:block;font-size:13px;color:var(--m);margin:0 0 4px}
+#mpf .f{flex:1 1 200px;min-width:0}
+#mpf input[type=text],#mpf input[type=number],#mpf select{width:100%;padding:11px 12px;font-size:16px;border:1px solid var(--l);border-radius:8px;background:#fff;color:var(--t);font-family:inherit}
+#mpf input:focus,#mpf select:focus,#mpf button:focus-visible{outline:2px solid var(--a);outline-offset:1px}
+#mpf button{font-family:inherit;cursor:pointer}
+#mpf .btn{padding:11px 18px;font-size:16px;border-radius:8px;border:1px solid var(--a);background:var(--a);color:#fff;white-space:nowrap}
+#mpf .btn.sec{background:#fff;color:var(--a)}#mpf .btn:disabled{opacity:.5;cursor:default}
+#mpf .link{background:none;border:0;color:var(--a);padding:0;font-size:14px;text-decoration:underline}
+#mpf .hits{list-style:none;margin:10px 0 0;padding:0;max-height:280px;overflow:auto;border:1px solid var(--l);border-radius:8px}
+#mpf .hits li{padding:10px 12px;border-bottom:1px solid var(--l);cursor:pointer;font-size:15px}
+#mpf .hits li:last-child{border-bottom:0}#mpf .hits li:hover,#mpf .hits li:focus{background:var(--a2)}
+#mpf .tag{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.03em;padding:2px 7px;border-radius:99px;background:var(--a2);color:var(--a);margin-left:6px;vertical-align:middle;text-transform:uppercase}
+#mpf .tag.w{background:var(--warnbg);color:var(--warn);margin-left:0}
+#mpf .drug{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;padding:12px 0;border-top:1px solid var(--l);margin-top:12px}
+#mpf .drug+.drug{margin-top:0}
+#mpf .drug .nm{flex:1 1 280px;font-weight:600;min-width:0}
+#mpf .drug .q{flex:0 0 150px}#mpf .drug .d{flex:0 0 170px}
+#mpf .msg{font-size:14px;color:var(--m);margin:10px 0 0}#mpf .err{color:#a12d2d}
+#mpf .filters{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end}
+#mpf .checks{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;flex:1 1 100%}
+#mpf .checks label{display:inline-flex;gap:6px;align-items:center;font-size:15px;color:var(--t);margin:0}
+#mpf .plan{border:1px solid var(--l);border-radius:10px;padding:18px;margin:0 0 12px;background:#fff}
+#mpf .plan .top{display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space-between;align-items:flex-start}
+#mpf .plan .pn{font-size:18px;font-weight:700}#mpf .plan .org{font-size:13px;color:var(--m)}
+#mpf .plan .tot{text-align:right}#mpf .plan .tot b{font-size:26px;display:block;line-height:1.1}
+#mpf .plan .tot span{font-size:12px;color:var(--m)}
+#mpf .facts{display:flex;flex-wrap:wrap;gap:8px 28px;margin:12px 0;font-size:14px}
+#mpf .facts div b{display:block;font-size:17px}
+#mpf table{width:100%;border-collapse:collapse;font-size:14px}
+#mpf th{font-size:12px;color:var(--m);font-weight:600;text-align:left;padding:6px 8px;border-bottom:1px solid var(--l)}
+#mpf td{padding:8px;border-bottom:1px solid var(--l);vertical-align:top}
+#mpf td.n,#mpf th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+#mpf .tw{overflow-x:auto}
+#mpf .details{margin-top:12px;padding-top:12px;border-top:1px dashed var(--l)}
+#mpf .cash{color:var(--a);font-weight:600;font-size:13px}
+#mpf .note{font-size:12px;color:var(--m);margin-top:18px;line-height:1.55}
+#mpf .rank{font-size:12px;color:var(--m);font-weight:600}
+@media(max-width:560px){#mpf .plan .tot{text-align:left}#mpf .drug .q,#mpf .drug .d{flex:1 1 120px}}
+</style>
+
+<h2>Compare Medicare drug plans</h2>
+<p class="sub" id="mpf-sub">Enter your medications to see what each Medicare Part D and Medicare Advantage drug plan in your county would cost you for the year.</p>
+
+<div class="card">
+  <h3>1. Where do you live?</h3>
+  <div class="row">
+    <div class="f"><label for="mpf-state">State</label><select id="mpf-state"><option value="">Loading…</option></select></div>
+    <div class="f"><label for="mpf-county">County</label><select id="mpf-county" disabled><option value="">Choose a state first</option></select></div>
+  </div>
+</div>
+
+<div class="card">
+  <h3>2. Your medications</h3>
+  <div class="row">
+    <div class="f"><label for="mpf-q">Drug name</label><input type="text" id="mpf-q" placeholder="e.g. Eliquis, atorvastatin" autocomplete="off"></div>
+    <button class="btn" id="mpf-find" type="button">Find drug</button>
+  </div>
+  <div id="mpf-hitmsg" class="msg" aria-live="polite"></div>
+  <ul class="hits" id="mpf-hits" hidden></ul>
+  <div id="mpf-drugs"></div>
+  <p class="msg">Quantity is the number of tablets, capsules, mL or grams you use in 30 days.</p>
+</div>
+
+<div class="card">
+  <h3>3. How you fill prescriptions</h3>
+  <div class="row">
+    <div class="f"><label for="mpf-ch">Pharmacy type</label>
+      <select id="mpf-ch"><option value="pref">Preferred retail pharmacy</option><option value="std">Standard retail pharmacy</option><option value="mail">Mail order</option></select></div>
+    <div class="f"><label for="mpf-start">Coverage starts</label><select id="mpf-start"></select></div>
+    <button class="btn" id="mpf-go" type="button" disabled>Compare plans</button>
+  </div>
+  <div id="mpf-gomsg" class="msg" aria-live="polite"></div>
+</div>
+
+<div id="mpf-results" hidden>
+  <div class="card">
+    <div class="filters">
+      <div class="checks" id="mpf-types">
+        <label><input type="checkbox" value="PDP" checked> Drug plans (Part D)</label>
+        <label><input type="checkbox" value="MAPD" checked> Medicare Advantage with drug coverage</label>
+        <label><input type="checkbox" value="SNP"> Special Needs Plans</label>
+        <label><input type="checkbox" id="mpf-all"> Covers all my drugs</label>
+        <label><input type="checkbox" id="mpf-nopa"> No prior authorization</label>
+      </div>
+      <div class="f"><label for="mpf-org">Insurance company</label><select id="mpf-org"></select></div>
+      <div class="f"><label for="mpf-maxprem">Max monthly premium</label><select id="mpf-maxprem"><option value="">Any</option><option value="0">$0</option><option value="25">$25</option><option value="50">$50</option><option value="100">$100</option></select></div>
+      <div class="f"><label for="mpf-maxded">Max drug deductible</label><select id="mpf-maxded"><option value="">Any</option><option value="0">$0</option><option value="250">$250</option><option value="500">$500</option></select></div>
+      <div class="f"><label for="mpf-sort">Sort by</label><select id="mpf-sort"><option value="total">Lowest yearly cost</option><option value="drugs">Lowest drug cost</option><option value="prem">Lowest premium</option><option value="ded">Lowest deductible</option><option value="name">Plan name</option></select></div>
+      <div class="f"><label for="mpf-search">Search plan name</label><input type="text" id="mpf-search" placeholder="e.g. Humana"></div>
+    </div>
+  </div>
+  <div class="msg" id="mpf-count" aria-live="polite" style="margin:0 0 12px"></div>
+  <div id="mpf-list"></div>
+  <button class="btn sec" id="mpf-more" type="button" hidden>Show more plans</button>
+</div>
+
+<p class="note" id="mpf-note"></p>
+</div>
+<script>
+/* Medicare Part D cost engine (2026 benefit rules). Pure functions, no DOM. */
+var MPF_ENGINE = (function () {
+  var RULES = { year: 2026, oopCap: 2100, insulinCap30: 35 };
+  var DAYS_CODE = { 30: 1, 90: 2, 60: 4 };
+
+  function inRanges(ranges, idx) {
+    for (var i = 0; i < ranges.length; i++) {
+      var r = ranges[i];
+      if (typeof r === 'number') { if (r === idx) return true; }
+      else if (idx >= r[0] && idx <= r[1]) return true;
+    }
+    return false;
+  }
+  /* unit cost for a plan from an rx file; null when the plan has no price for it */
+  function unitCost(rxData, planIdx) {
+    var p = rxData.p || [];
+    for (var i = 0; i < p.length; i++) if (inRanges(p[i][1], planIdx)) return p[i][0];
+    return null;
+  }
+  function countRanges(ranges) {
+    var n = 0;
+    for (var i = 0; i < ranges.length; i++) n += typeof ranges[i] === 'number' ? 1 : ranges[i][1] - ranges[i][0] + 1;
+    return n;
+  }
+  /* typical (median across plans) unit cost: used as the retail estimate when a plan doesn't cover the drug */
+  function medianUnitCost(rxData) {
+    var p = (rxData.p || []).map(function (g) { return [g[0], countRanges(g[1])]; }).sort(function (a, b) { return a[0] - b[0]; });
+    var total = p.reduce(function (s, g) { return s + g[1]; }, 0), acc = 0;
+    for (var i = 0; i < p.length; i++) { acc += p[i][1]; if (acc >= total / 2) return p[i][0]; }
+    return null;
+  }
+  function csRow(plan, cov, tier, days) {
+    var code = DAYS_CODE[days], rows = plan.cs, fallback = null;
+    for (var i = 0; i < rows.length; i++) {
+      var r = rows[i];
+      if (r[0] !== cov || r[1] !== tier) continue;
+      if (r[2] === code) return r;
+      if (r[2] === 1) fallback = r;
+    }
+    return fallback ? { row: fallback, scaled: true } : null;
+  }
+  /* pick [type, amount] for the pharmacy channel. type 1 = copay, 2 = coinsurance */
+  function pick(r, channel) {
+    var scaled = false;
+    if (r && r.row) { scaled = true; r = r.row; }
+    if (!r) return null;
+    var t, a;
+    if (channel === 'mail' && r[7]) { t = r[7]; a = r[8]; }
+    else if (channel === 'pref' && r[3]) { t = r[3]; a = r[4]; }
+    else if (r[5]) { t = r[5]; a = r[6]; }
+    else if (r[3]) { t = r[3]; a = r[4]; }
+    else return null;
+    return { type: t, amt: a, scaled: scaled, dedApplies: !!r[9], specialty: !!r[10] };
+  }
+  function share(cs, full, days) {
+    if (!cs) return full * 0.25;
+    if (cs.type === 2) return full * cs.amt;
+    var copay = cs.scaled ? cs.amt * (days / 30) : cs.amt;
+    return Math.min(copay, full);
+  }
+  function hasPreferred(plan) {
+    for (var i = 0; i < plan.cs.length; i++) if (plan.cs[i][0] === 1 && plan.cs[i][3]) return true;
+    return false;
+  }
+  function insulinCopay(plan, tier, days, channel) {
+    var code = DAYS_CODE[days], rows = plan.ins || [];
+    for (var i = 0; i < rows.length; i++) {
+      var r = rows[i];
+      if (r[0] !== tier || r[1] !== code) continue;
+      var order = channel === 'mail' ? [4, 5, 3, 2] : channel === 'pref' ? [2, 3] : [3, 2];
+      for (var k = 0; k < order.length; k++) if (r[order[k]] != null) return r[order[k]];
+    }
+    return null;
+  }
+
+  /* drugs: [{rxcui, qty (units per 30 days), days (30|90), insulin, entry:[tier,pa,st,qlAmt,qlDays]|null,
+              unit (plan unit cost|null), retailUnit (fallback unit cost|null), cash (cash price per 30 days|null)}]
+     opts: {channel:'pref'|'std'|'mail', startMonth:1..12} */
+  function estimate(plan, drugs, opts) {
+    opts = opts || {};
+    var channel = opts.channel || 'std', start = opts.startMonth || 1;
+    var months = 12 - start + 1;
+    var ded = plan.ded || 0, troop = 0, drugTotal = 0, unknown = false;
+    var monthly = [], per = drugs.map(function (d) {
+      return { rxcui: d.rxcui, covered: !!d.entry, tier: d.entry ? d.entry[0] : null, pa: d.entry ? !!d.entry[1] : false,
+        st: d.entry ? !!d.entry[2] : false, ql: d.entry && d.entry[3] ? [d.entry[3], d.entry[4]] : null,
+        total: 0, fills: 0, first: null, typical: null, full: null, usedCash: false, noPrice: false };
+    });
+    for (var m = start; m <= 12; m++) {
+      var mTotal = 0;
+      for (var i = 0; i < drugs.length; i++) {
+        var d = drugs[i], o = per[i], days = d.days || 30;
+        if (days === 90 && (m - start) % 3 !== 0) continue;
+        var mult = days / 30, qty = d.qty * mult, pay, phase;
+        var cashFill = d.cash != null ? d.cash * mult : null;
+        if (!d.entry) {
+          var ru = d.unit != null ? d.unit : d.retailUnit;
+          if (ru == null && cashFill == null) { o.noPrice = true; unknown = true; continue; }
+          pay = ru != null ? ru * qty : cashFill; phase = 'not covered';
+          if (cashFill != null && cashFill < pay) { pay = cashFill; o.usedCash = true; }
+          o.full = ru != null ? ru * qty : null;
+        } else {
+          var u = d.unit != null ? d.unit : d.retailUnit;
+          if (u == null) { o.noPrice = true; unknown = true; continue; }
+          var full = u * qty, tier = d.entry[0];
+          o.full = full;
+          var ic = pick(csRow(plan, 1, tier, days), channel);
+          if (troop >= RULES.oopCap) { pay = 0; phase = 'catastrophic'; }
+          else if (d.insulin) {
+            var cap = RULES.insulinCap30 * mult, c = insulinCopay(plan, tier, days, channel);
+            pay = Math.min(c != null ? c : share(ic, full, days), cap, full); phase = 'insulin';
+            if (o.typical == null) o.typical = { type: 1, amt: pay, est: pay };
+          } else {
+            var dedApplies = ded > 0 && (!ic || ic.dedApplies);
+            var pre = ded > 0 ? pick(csRow(plan, 0, tier, days), channel) : null;
+            if (ded > 0 && pre && !(ic && ic.dedApplies)) { pay = share(pre, full, days); phase = 'deductible-exempt'; }
+            else if (dedApplies) {
+              var inDed = Math.min(full, ded);
+              pay = inDed; ded -= inDed; phase = 'deductible';
+              if (full > inDed) pay += share(ic, full - inDed, days) > (full - inDed) ? (full - inDed) : share(ic, full - inDed, days);
+            } else { pay = share(ic, full, days); phase = 'initial'; }
+          }
+          if (pay > RULES.oopCap - troop) pay = Math.max(0, RULES.oopCap - troop);
+          var counted = pay;
+          if (cashFill != null && cashFill < pay) { pay = cashFill; counted = 0; o.usedCash = true; }
+          troop += counted;
+          if (o.typical == null) o.typical = ic ? { type: ic.type, amt: ic.type === 1 ? Math.min(ic.scaled ? ic.amt * mult : ic.amt, full) : ic.amt, est: share(ic, full, days) } : null;
+        }
+        if (o.first == null) o.first = { amt: pay, phase: phase };
+        o.total += pay; o.fills++; mTotal += pay;
+      }
+      monthly.push({ month: m, drugs: mTotal, premium: plan.prem || 0 });
+      drugTotal += mTotal;
+    }
+    var covered = per.filter(function (o) { return o.covered; }).length;
+    return { total: drugTotal + (plan.prem || 0) * months, drugTotal: drugTotal, premiumTotal: (plan.prem || 0) * months,
+      months: months, monthly: monthly, per: per, covered: covered, allCovered: covered === drugs.length,
+      reachedCap: troop >= RULES.oopCap, unknown: unknown, hasPreferred: hasPreferred(plan) };
+  }
+  function planType(plan) {
+    var c = plan.id.charAt(0), n = plan.name;
+    if (c === 'S') return 'PDP';
+    if (plan.snp) return 'SNP';
+    return 'MAPD';
+  }
+  return { RULES: RULES, estimate: estimate, unitCost: unitCost, medianUnitCost: medianUnitCost, planType: planType, pick: pick, csRow: csRow, hasPreferred: hasPreferred };
+})();
+if (typeof module !== 'undefined') module.exports = MPF_ENGINE;
+
+(function(){
+/* ================= SETTINGS ================= */
+var CONFIG = {
+  DATA_URL: 'data/',            // where the data folder is hosted, with trailing slash
+  CASH_PRICES_URL: '',          // cash price slot: URL of prices.json (leave '' to turn off)
+  CASH_LABEL: 'Hudson Pharmacy cash price',
+  PAGE_SIZE: 20
+};
+/* ============================================ */
+var E = MPF_ENGINE, $ = function(id){return document.getElementById(id);};
+var RX = 'https://rxnav.nlm.nih.gov/REST/';
+var S = {meta:null, stateData:null, county:'', rxset:null, drugs:[], rx:{}, results:null, shown:0, cash:null};
+var cache = {};
+function getJSON(url){ return cache[url] || (cache[url] = fetch(url).then(function(r){ if(!r.ok) throw new Error(r.status+' '+url); return r.json(); }).catch(function(e){ delete cache[url]; throw e; })); }
+function esc(s){ return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
+function money(v){ return v==null||isNaN(v) ? 'n/a' : '$'+v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function money0(v){ return '$'+Math.round(v).toLocaleString('en-US'); }
+var MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+/* ---------- setup ---------- */
+function init(){
+  var st=$('mpf-start'); MONTHS.forEach(function(m,i){ var o=document.createElement('option'); o.value=i+1; o.textContent=m+(i===0?' (full year)':''); st.appendChild(o); });
+  getJSON(CONFIG.DATA_URL+'states.json').then(function(meta){
+    S.meta=meta;
+    $('mpf-state').innerHTML='<option value="">Choose your state</option>'+meta.states.filter(function(s){return s[3]>0;}).map(function(s){return '<option value="'+s[1]+'">'+esc(s[0])+'</option>';}).join('');
+    $('mpf-sub').textContent+=' Plan year '+meta.year+'.';
+    $('mpf-note').innerHTML='Estimates only. Built from the CMS Prescription Drug Plan Formulary, Pharmacy Network, and Pricing Information public use file ('+esc(meta.source)+') using '+meta.year+' Part D rules: you pay nothing for covered drugs after $'+E.RULES.oopCap.toLocaleString()+' out of pocket, and covered insulin is capped at $'+E.RULES.insulinCap30+' a month. Premiums shown are the drug-coverage premium; Medicare Advantage medical benefits, star ratings and Extra Help (LIS) savings are not included. Prices, formularies and pharmacy networks change during the year and your cost depends on the pharmacy you use. Confirm any plan at <a href="https://www.medicare.gov/plan-compare/" target="_blank" rel="noopener">Medicare.gov</a> or 1-800-MEDICARE before enrolling. This tool is not connected with or endorsed by the U.S. government or the federal Medicare program.';
+  }).catch(function(){ $('mpf-state').innerHTML='<option value="">Could not load plan data</option>'; });
+  getJSON(CONFIG.DATA_URL+'rxlist.json').then(function(l){ S.rxset=new Set(l); }).catch(function(){});
+  if(CONFIG.CASH_PRICES_URL) getJSON(CONFIG.CASH_PRICES_URL).then(function(c){ S.cash=c.items||c; }).catch(function(){});
+  $('mpf-state').addEventListener('change',onState);
+  $('mpf-county').addEventListener('change',function(){ S.county=this.value; S.results=null; $('mpf-results').hidden=true; ready(); });
+  $('mpf-find').addEventListener('click',findDrug);
+  $('mpf-q').addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); findDrug(); }});
+  $('mpf-go').addEventListener('click',compare);
+  ['mpf-org','mpf-maxprem','mpf-maxded','mpf-sort','mpf-all','mpf-nopa'].forEach(function(id){ $(id).addEventListener('change',function(){ S.shown=CONFIG.PAGE_SIZE; render(); }); });
+  $('mpf-types').addEventListener('change',function(){ S.shown=CONFIG.PAGE_SIZE; render(); });
+  $('mpf-search').addEventListener('input',function(){ S.shown=CONFIG.PAGE_SIZE; render(); });
+  $('mpf-more').addEventListener('click',function(){ S.shown+=CONFIG.PAGE_SIZE; render(); });
+  $('mpf-ch').addEventListener('change',function(){ if(S.results) compare(); });
+  $('mpf-start').addEventListener('change',function(){ if(S.results) compare(); });
+}
+function onState(){
+  var slug=this.value, c=$('mpf-county'); S.county=''; S.stateData=null; S.results=null; $('mpf-results').hidden=true; ready();
+  if(!slug){ c.disabled=true; c.innerHTML='<option value="">Choose a state first</option>'; return; }
+  c.disabled=true; c.innerHTML='<option value="">Loading…</option>';
+  getJSON(CONFIG.DATA_URL+'state/'+slug+'.json').then(function(d){
+    if($('mpf-state').value!==slug) return;
+    S.stateData=d;
+    var list=Object.keys(d.counties).map(function(k){return [k,d.counties[k][0]];}).sort(function(a,b){return a[1].localeCompare(b[1]);});
+    c.innerHTML='<option value="">Choose your county</option>'+list.map(function(x){return '<option value="'+x[0]+'">'+esc(x[1])+'</option>';}).join('');
+    c.disabled=false;
+  }).catch(function(){ c.innerHTML='<option value="">Could not load counties</option>'; });
+}
+function ready(){ $('mpf-go').disabled=!(S.county&&S.drugs.length); $('mpf-gomsg').className='msg'; $('mpf-gomsg').textContent = S.county&&!S.drugs.length ? 'Add at least one medication to compare plans.' : ''; }
+
+/* ---------- drug search (RxNorm) ---------- */
+function rxDrugs(name){
+  return fetch(RX+'drugs.json?name='+encodeURIComponent(name)).then(function(r){return r.json();}).then(function(j){
+    var out=[]; ((j.drugGroup||{}).conceptGroup||[]).forEach(function(g){ (g.conceptProperties||[]).forEach(function(p){ if(/^(SCD|SBD|GPCK|BPCK)$/.test(p.tty)) out.push({rxcui:+p.rxcui,name:p.name,brand:/^(SBD|BPCK)$/.test(p.tty)}); }); });
+    return out;
+  });
+}
+function findDrug(){
+  var q=$('mpf-q').value.trim(), msg=$('mpf-hitmsg'), ul=$('mpf-hits'); msg.className='msg';
+  if(q.length<3){ msg.textContent='Type at least 3 letters.'; return; }
+  msg.textContent='Searching…'; ul.hidden=true;
+  rxDrugs(q).then(function(list){
+    if(list.length) return {list:list,term:q};
+    return fetch(RX+'spellingsuggestions.json?name='+encodeURIComponent(q)).then(function(r){return r.json();}).then(function(j){
+      var s=(((j.suggestionGroup||{}).suggestionList||{}).suggestion||[])[0];
+      return s ? rxDrugs(s).then(function(l){return {list:l,term:s};}) : {list:[],term:q};
+    });
+  }).then(function(res){
+    var all=res.list, list=S.rxset ? all.filter(function(d){return S.rxset.has(d.rxcui);}) : all;
+    if(!list.length){ msg.textContent = all.length ? 'No Medicare drug plan lists "'+res.term+'" on its formulary.' : 'No match for "'+q+'". Check the spelling or try the generic name.'; return; }
+    list.sort(function(a,b){ return a.name.localeCompare(b.name,undefined,{numeric:true}); });
+    msg.textContent='Choose the strength and form'+(res.term.toLowerCase()!==q.toLowerCase()?' (showing results for "'+res.term+'")':'')+':';
+    ul.innerHTML=list.map(function(d,i){return '<li tabindex="0" data-i="'+i+'">'+esc(d.name)+(d.brand?'<span class="tag">Brand</span>':'')+'</li>';}).join('');
+    ul.hidden=false;
+    ul.onclick=ul.onkeydown=function(e){ if(e.type==='keydown'&&e.key!=='Enter') return; var li=e.target.closest('li'); if(li) addDrug(list[+li.dataset.i]); };
+  }).catch(function(){ msg.className='msg err'; msg.textContent='Drug search is unavailable right now. Please try again.'; });
+}
+function addDrug(d){
+  $('mpf-hits').hidden=true; $('mpf-hitmsg').textContent=''; $('mpf-q').value='';
+  if(!S.drugs.some(function(x){return x.rxcui===d.rxcui;})) S.drugs.push({rxcui:d.rxcui,name:d.name,qty:30,days:30,insulin:/insulin/i.test(d.name)});
+  drawDrugs(); ready(); if(S.results) compare();
+}
+function drawDrugs(){
+  $('mpf-drugs').innerHTML=S.drugs.map(function(d,i){
+    return '<div class="drug"><div class="nm">'+esc(d.name)+'</div>'+
+      '<div class="q"><label for="mpf-qty'+i+'">Quantity per 30 days</label><input type="number" min="0.1" step="any" id="mpf-qty'+i+'" data-i="'+i+'" data-k="qty" value="'+d.qty+'"></div>'+
+      '<div class="d"><label for="mpf-days'+i+'">Refill</label><select id="mpf-days'+i+'" data-i="'+i+'" data-k="days"><option value="30"'+(d.days===30?' selected':'')+'>Every month</option><option value="90"'+(d.days===90?' selected':'')+'>Every 3 months</option></select></div>'+
+      '<button class="link" type="button" data-rm="'+i+'">Remove</button></div>';
+  }).join('');
+}
+$('mpf-drugs').addEventListener('change',function(e){ var t=e.target; if(t.dataset.k){ var v=parseFloat(t.value); if(v>0){ S.drugs[+t.dataset.i][t.dataset.k]=v; if(S.results) compare(); } }});
+$('mpf-drugs').addEventListener('click',function(e){ var r=e.target.dataset.rm; if(r!=null){ S.drugs.splice(+r,1); drawDrugs(); ready(); if(S.results&&S.drugs.length) compare(); else { S.results=null; $('mpf-results').hidden=true; } }});
+
+/* ---------- cash price slot ----------
+   prices.json items: {name, size, price, rxcui (optional)}. price is for `size` units. */
+function cashFor(d){
+  if(!S.cash) return null;
+  var plain=d.name.toLowerCase().replace(/\[.*?\]/g,' ');
+  var word=(plain.match(/[a-z]{4,}/)||[])[0], strength=(plain.match(/\d+(\.\d+)?/)||[])[0];
+  var brand=(d.name.match(/\[(.+?)\]/)||[])[1];
+  for(var i=0;i<S.cash.length;i++){ var it=S.cash[i], n=String(it.name||'').toLowerCase(), size=parseFloat(it.size), hit;
+    if(it.rxcui) hit = +it.rxcui===d.rxcui;
+    else hit = (brand ? n.indexOf(brand.toLowerCase())>=0 : !!word && n.indexOf(word)>=0) && (!strength || new RegExp('(^|[^\\d.])'+strength.replace('.','\\.')+'\\s*(mg|mcg|g|ml|unit|%)').test(n));
+    if(hit && size>0 && it.price>0) return it.price/size*d.qty;
+  }
+  return null;
+}
+
+/* ---------- compare ---------- */
+function compare(){
+  if(!S.county||!S.drugs.length||!S.stateData) return;
+  var msg=$('mpf-gomsg'); msg.className='msg'; msg.textContent='Calculating…';
+  Promise.all(S.drugs.map(function(d){ return getJSON(CONFIG.DATA_URL+'rx/'+d.rxcui+'.json').then(function(x){ S.rx[d.rxcui]=x; }); })).then(function(){
+    var ids=S.stateData.counties[S.county][1], ch=$('mpf-ch').value, start=+$('mpf-start').value;
+    var cash=S.drugs.map(cashFor), med=S.drugs.map(function(d){return E.medianUnitCost(S.rx[d.rxcui]);});
+    S.results=ids.map(function(idx){
+      var plan=S.stateData.plans[idx];
+      var drugs=S.drugs.map(function(d,i){ var x=S.rx[d.rxcui]; return {rxcui:d.rxcui,qty:d.qty,days:d.days,insulin:d.insulin,entry:x.f[plan.f]||null,unit:E.unitCost(x,idx),retailUnit:med[i],cash:cash[i]}; });
+      return {idx:idx,plan:plan,type:E.planType(plan),est:E.estimate(plan,drugs,{channel:ch,startMonth:start})};
+    });
+    var orgs={}; S.results.forEach(function(r){orgs[r.plan.org]=1;});
+    var cur=$('mpf-org').value;
+    $('mpf-org').innerHTML='<option value="">All companies</option>'+Object.keys(orgs).sort().map(function(o){return '<option'+(o===cur?' selected':'')+'>'+esc(o)+'</option>';}).join('');
+    S.shown=CONFIG.PAGE_SIZE; $('mpf-results').hidden=false; msg.textContent=''; render();
+  }).catch(function(){ msg.className='msg err'; msg.textContent='Could not load drug data. Please try again.'; });
+}
+function filtered(){
+  var types={}; [].forEach.call($('mpf-types').querySelectorAll('input[value]'),function(c){ types[c.value]=c.checked; });
+  var org=$('mpf-org').value, mp=$('mpf-maxprem').value, md=$('mpf-maxded').value, all=$('mpf-all').checked, nopa=$('mpf-nopa').checked, q=$('mpf-search').value.trim().toLowerCase(), sort=$('mpf-sort').value;
+  var out=S.results.filter(function(r){
+    if(!types[r.type]) return false;
+    if(org&&r.plan.org!==org) return false;
+    if(mp!==''&&r.plan.prem>+mp) return false;
+    if(md!==''&&r.plan.ded>+md) return false;
+    if(all&&!r.est.allCovered) return false;
+    if(nopa&&r.est.per.some(function(o){return o.pa;})) return false;
+    if(q&&(r.plan.name+' '+r.plan.org+' '+r.plan.id).toLowerCase().indexOf(q)<0) return false;
+    return true;
+  });
+  var key={total:function(r){return r.est.total;},drugs:function(r){return r.est.drugTotal;},prem:function(r){return r.plan.prem;},ded:function(r){return r.plan.ded;}}[sort];
+  var bad=function(r){ return (r.plan.sup||r.est.unknown)?1:0; };
+  out.sort(function(a,b){ if(sort==='name') return a.plan.name.localeCompare(b.plan.name); return (bad(a)-bad(b))||(key(a)-key(b))||(a.est.total-b.est.total)||a.plan.name.localeCompare(b.plan.name); });
+  return out;
+}
+var TYPE={PDP:'Drug plan (Part D)',MAPD:'Medicare Advantage',SNP:'Special Needs Plan'};
+function copayText(o){
+  if(!o.covered) return 'Full price';
+  if(o.noPrice) return 'n/a';
+  if(!o.typical) return money(o.first&&o.first.amt);
+  return o.typical.type===1 ? money(o.typical.amt) : Math.round(o.typical.amt*100)+'% (about '+money(o.typical.est)+')';
+}
+function planHTML(r,rank){
+  var p=r.plan, e=r.est, ch=$('mpf-ch').value, chLabel={pref:'preferred retail',std:'standard retail',mail:'mail order'}[ch];
+  var rows=e.per.map(function(o,i){ var d=S.drugs[i], flags=[];
+    if(o.pa) flags.push('Prior authorization'); if(o.st) flags.push('Step therapy'); if(o.ql) flags.push('Quantity limit '+o.ql[0]+' per '+o.ql[1]+' days');
+    return '<tr><td>'+esc(d.name)+(o.usedCash?'<div class="cash">'+esc(CONFIG.CASH_LABEL)+' is lower for some fills</div>':'')+'</td><td>'+(o.covered?'Tier '+o.tier:'<span class="tag w">Not covered</span>')+'</td><td class="n">'+copayText(o)+'</td><td class="n">'+(o.first?money(o.first.amt):'n/a')+'</td><td class="n">'+(o.noPrice?'n/a':money(o.total))+'</td><td>'+(flags.join('; ')||'None')+'</td></tr>'; }).join('');
+  var months=e.monthly.map(function(m){return '<tr><td>'+MONTHS[m.month-1]+'</td><td class="n">'+money(m.drugs)+'</td><td class="n">'+money(m.premium)+'</td><td class="n">'+money(m.drugs+m.premium)+'</td></tr>';}).join('');
+  var tiers={}; p.cs.forEach(function(c){ if(c[0]===1&&c[2]===1) tiers[c[1]]=c; });
+  var tierRows=Object.keys(tiers).map(function(t){ var c=E.pick(tiers[t],ch); return '<tr><td>Tier '+t+(c&&c.specialty?' (specialty)':'')+'</td><td class="n">'+(c?(c.type===1?money(c.amt):Math.round(c.amt*100)+'%'):'n/a')+'</td><td>'+(c&&c.dedApplies&&p.ded>0?'Yes':'No')+'</td></tr>'; }).join('');
+  return '<div class="plan"><div class="top"><div><div class="rank">#'+rank+' · '+TYPE[r.type]+' · '+esc(p.id.replace(/-000$/,''))+'</div><div class="pn">'+esc(p.name)+'</div><div class="org">'+esc(p.org)+'</div></div>'+
+    '<div class="tot"><b>'+(p.sup||e.unknown?'n/a':money0(e.total))+'</b><span>estimated drugs + premium, '+(e.months===12?'full year':e.months+' months')+'</span></div></div>'+
+    '<div class="facts"><div>Drug premium<b>'+money(p.prem)+'/mo</b></div><div>Drug deductible<b>'+money0(p.ded)+'</b></div><div>Your drug costs<b>'+(e.unknown?'n/a':money0(e.drugTotal))+'</b></div><div>Drugs covered<b>'+e.covered+' of '+S.drugs.length+'</b></div></div>'+
+    (p.sup?'<p class="msg">CMS has suppressed pricing data for this plan, so costs can\'t be estimated.</p>':'')+
+    (ch==='pref'&&!e.hasPreferred?'<p class="msg">This plan has no preferred pharmacies; standard retail cost sharing is shown.</p>':'')+
+    (e.reachedCap?'<p class="msg">You would reach the $'+E.RULES.oopCap.toLocaleString()+' yearly out-of-pocket limit on this plan; covered drugs cost $0 after that.</p>':'')+
+    '<div class="tw"><table><thead><tr><th>Medication</th><th>Tier</th><th class="n">Copay after deductible</th><th class="n">First fill</th><th class="n">Year total</th><th>Restrictions</th></tr></thead><tbody>'+rows+'</tbody></table></div>'+
+    '<p style="margin:10px 0 0"><button class="link" type="button" data-det="'+r.idx+'" aria-expanded="false">Plan details and month-by-month costs</button></p>'+
+    '<div class="details" id="mpf-det'+r.idx+'" hidden><div class="row" style="align-items:flex-start"><div class="f tw"><h3>Month by month</h3><table><thead><tr><th>Month</th><th class="n">Drugs</th><th class="n">Premium</th><th class="n">Total</th></tr></thead><tbody>'+months+'</tbody></table></div>'+
+    '<div class="f tw"><h3>Cost sharing by tier (30-day, '+chLabel+')</h3><table><thead><tr><th>Tier</th><th class="n">You pay</th><th>Deductible applies</th></tr></thead><tbody>'+tierRows+'</tbody></table>'+
+    '<p class="msg">Contract-plan ID '+esc(p.id)+'. Look this plan up on <a href="https://www.medicare.gov/plan-compare/" target="_blank" rel="noopener">Medicare.gov</a> to confirm costs, pharmacies and medical benefits.</p></div></div></div></div>';
+}
+function render(){
+  if(!S.results) return;
+  var list=filtered(), n=Math.min(S.shown,list.length), cn=S.stateData.counties[S.county][0];
+  $('mpf-count').textContent='Showing '+list.length+' of '+S.results.length+' plans in '+cn+', '+S.stateData.state+(list.length?'.':'. Loosen the filters to see more.');
+  $('mpf-list').innerHTML=list.slice(0,n).map(function(r,i){return planHTML(r,i+1);}).join('');
+  $('mpf-more').hidden=n>=list.length;
+}
+$('mpf-list').addEventListener('click',function(e){ var id=e.target.dataset.det; if(id!=null){ var el=$('mpf-det'+id); el.hidden=!el.hidden; e.target.setAttribute('aria-expanded',String(!el.hidden)); }});
+init();
+})();
+</script>
+
+</body></html>
