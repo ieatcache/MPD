@@ -482,7 +482,7 @@ function render(){
   $('mpf-more').hidden=n>=list.length;
   var ok=list.filter(function(r){return !r.plan.sup&&!r.est.unknown&&!r.base.unknown;}), bn=$('mpf-savemsg');
   if(ok.length){ var bb=Math.min.apply(null,ok.map(function(r){return r.base.total;})), bs=Math.min.apply(null,ok.map(function(r){return r.est.total;})), cnt=ok.filter(function(r){return r.base.total-r.est.total>0.5;}).length;
-    if(cnt){ bn.hidden=false; bn.innerHTML='With the savings you selected, the lowest-cost plan comes to <b>'+money0(bs)+'</b> for the year instead of '+money0(bb)+'. Savings lower the cost on '+cnt+' of '+ok.length+' plans shown.'; } else bn.hidden=true; } else bn.hidden=true;
+    if(cnt){ bn.hidden=false; bn.innerHTML=(bb-bs>0.5?'With the savings you selected, the lowest-cost plan comes to <b>'+money0(bs)+'</b> for the year instead of '+money0(bb)+'. ':'The lowest-cost plan is <b>'+money0(bs)+'</b> for the year with or without savings. ')+'Savings lower the cost on '+cnt+' of '+ok.length+' plans shown.'; } else bn.hidden=true; } else bn.hidden=true;
 }
 $('mpf-list').addEventListener('click',function(e){ var id=e.target.dataset.det; if(id!=null){ var el=$('mpf-det'+id); el.hidden=!el.hidden; e.target.setAttribute('aria-expanded',String(!el.hidden)); }});
 init();
