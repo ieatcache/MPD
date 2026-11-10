@@ -260,7 +260,7 @@ if (typeof module !== 'undefined') module.exports = MPF_ENGINE;
 /* ================= SETTINGS ================= */
 var CONFIG = {
   DATA_URL: 'data/',            // where the data folder is hosted, with trailing slash
-  CASH_PRICES_URL: '',          // cash price slot: URL of prices.json (leave '' to turn off)
+  CASH_PRICES_URL: 'cash/prices.json',  // cash price slot: path inside the data folder, or a full URL ('' turns it off)
   CASH_LABEL: 'Hudson Pharmacy cash price',
   PAGE_SIZE: 20
 };
@@ -285,7 +285,8 @@ function init(){
     $('mpf-note').innerHTML='Estimates only. Built from the CMS Prescription Drug Plan Formulary, Pharmacy Network, and Pricing Information public use file ('+esc(meta.source)+') using '+meta.year+' Part D rules: you pay nothing for covered drugs after $'+E.RULES.oopCap.toLocaleString()+' out of pocket, and covered insulin is capped at $'+E.RULES.insulinCap30+' a month. Premiums shown are the drug-coverage premium; Medicare Advantage medical benefits, star ratings and Extra Help (LIS) savings are not included. Prices, formularies and pharmacy networks change during the year and your cost depends on the pharmacy you use. Confirm any plan at <a href="https://www.medicare.gov/plan-compare/" target="_blank" rel="noopener">Medicare.gov</a> or 1-800-MEDICARE before enrolling. This tool is not connected with or endorsed by the U.S. government or the federal Medicare program.';
   }).catch(function(){ $('mpf-state').innerHTML='<option value="">Could not load plan data</option>'; });
   getJSON(CONFIG.DATA_URL+'rxlist.json').then(function(l){ S.rxset=new Set(l); }).catch(function(){});
-  if(CONFIG.CASH_PRICES_URL) getJSON(CONFIG.CASH_PRICES_URL).then(function(c){ S.cash=c.items||c; }).catch(function(){});
+  var cu=CONFIG.CASH_PRICES_URL; if(cu&&!/^https?:/.test(cu)) cu=CONFIG.DATA_URL+cu;
+  if(cu) getJSON(cu).then(function(c){ S.cash=c.items||c; drawDrugs(); if(S.results) compare(); }).catch(function(){});
   $('mpf-state').addEventListener('change',onState);
   $('mpf-county').addEventListener('change',function(){ S.county=this.value; S.results=null; $('mpf-results').hidden=true; ready(); });
   $('mpf-find').addEventListener('click',findDrug);
@@ -346,13 +347,14 @@ function addDrug(d){
 }
 function drawDrugs(){
   $('mpf-drugs').innerHTML=S.drugs.map(function(d,i){
-    return '<div class="drug"><div class="nm">'+esc(d.name)+'</div>'+
+    var cp=cashFor(d);
+    return '<div class="drug"><div class="nm">'+esc(d.name)+(cp!=null?'<div class="cash">'+esc(CONFIG.CASH_LABEL)+': '+money(cp)+' per 30 days</div>':'')+'</div>'+
       '<div class="q"><label for="mpf-qty'+i+'">Quantity per 30 days</label><input type="number" min="0.1" step="any" id="mpf-qty'+i+'" data-i="'+i+'" data-k="qty" value="'+d.qty+'"></div>'+
       '<div class="d"><label for="mpf-days'+i+'">Refill</label><select id="mpf-days'+i+'" data-i="'+i+'" data-k="days"><option value="30"'+(d.days===30?' selected':'')+'>Every month</option><option value="90"'+(d.days===90?' selected':'')+'>Every 3 months</option></select></div>'+
       '<button class="link" type="button" data-rm="'+i+'">Remove</button></div>';
   }).join('');
 }
-$('mpf-drugs').addEventListener('change',function(e){ var t=e.target; if(t.dataset.k){ var v=parseFloat(t.value); if(v>0){ S.drugs[+t.dataset.i][t.dataset.k]=v; if(S.results) compare(); } }});
+$('mpf-drugs').addEventListener('change',function(e){ var t=e.target; if(t.dataset.k){ var v=parseFloat(t.value); if(v>0){ S.drugs[+t.dataset.i][t.dataset.k]=v; if(t.dataset.k==='qty'){ var id=t.id; drawDrugs(); var el=document.getElementById(id); if(el) el.focus(); } if(S.results) compare(); } }});
 $('mpf-drugs').addEventListener('click',function(e){ var r=e.target.dataset.rm; if(r!=null){ S.drugs.splice(+r,1); drawDrugs(); ready(); if(S.results&&S.drugs.length) compare(); else { S.results=null; $('mpf-results').hidden=true; } }});
 
 /* ---------- cash price slot ----------
@@ -379,8 +381,10 @@ function compare(){
     var cash=S.drugs.map(cashFor), med=S.drugs.map(function(d){return E.medianUnitCost(S.rx[d.rxcui]);});
     S.results=ids.map(function(idx){
       var plan=S.stateData.plans[idx];
-      var drugs=S.drugs.map(function(d,i){ var x=S.rx[d.rxcui]; return {rxcui:d.rxcui,qty:d.qty,days:d.days,insulin:d.insulin,entry:x.f[plan.f]||null,unit:E.unitCost(x,idx),retailUnit:med[i],cash:cash[i]}; });
-      return {idx:idx,plan:plan,type:E.planType(plan),est:E.estimate(plan,drugs,{channel:ch,startMonth:start})};
+      var mk=function(useCash){ return S.drugs.map(function(d,i){ var x=S.rx[d.rxcui]; return {rxcui:d.rxcui,qty:d.qty,days:d.days,insulin:d.insulin,entry:x.f[plan.f]||null,unit:E.unitCost(x,idx),retailUnit:med[i],cash:useCash?cash[i]:null}; }); };
+      var o={channel:ch,startMonth:start}, est=E.estimate(plan,mk(true),o);
+      if(est.per.some(function(x){return x.usedCash;})){ var plain=E.estimate(plan,mk(false),o); if(!plain.unknown&&plain.total<=est.total) est=plain; }
+      return {idx:idx,plan:plan,type:E.planType(plan),est:est};
     });
     var orgs={}; S.results.forEach(function(r){orgs[r.plan.org]=1;});
     var cur=$('mpf-org').value;
